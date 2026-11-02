@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamsafar Music 🎵</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#090018,#190b35,#080d25);
+  color:white;
+  min-height:100vh;
+  padding:20px;
+}
+
+header{
+  text-align:center;
+  padding:20px;
+}
+
+.logo{
+  font-size:34px;
+  font-weight:bold;
+  color:#d7a5ff;
+  text-shadow:0 0 20px #a855f7;
+}
+
+header p{color:#c8b9df;margin-top:8px}
+
+.container{
+  max-width:1000px;
+  margin:20px auto;
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  gap:20px;
+}
+
+.player-box,.playlist{
+  background:#ffffff10;
+  border:1px solid #ffffff20;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 35px #0005;
+}
+
+.video{
+  width:100%;
+  aspect-ratio:16/9;
+  border:0;
+  border-radius:12px;
+  background:#000;
+}
+
+.now{
+  font-size:21px;
+  margin:18px 0 8px;
+  color:#e5c8ff;
+}
+
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-top:18px;
+}
+
+button{
+  border:0;
+  border-radius:30px;
+  padding:12px 20px;
+  background:linear-gradient(135deg,#a855f7,#6d28d9);
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{opacity:.85;transform:scale(1.04)}
+
+.playlist h2{
+  margin-bottom:15px;
+  color:#dfbaff;
+}
+
+.song{
+  padding:14px;
+  background:#ffffff0d;
+  border:1px solid #ffffff12;
+  border-radius:10px;
+  margin-bottom:10px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  transition:.2s;
+}
+
+.song:hover,.song.active{
+  background:#8b35c755;
+  border-color:#bd77ff;
+}
+
+.number{
+  background:#7136a8;
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+}
+
+.song-title{font-weight:bold}
+.song small{color:#bdaacb}
+
+footer{
+  text-align:center;
+  padding:25px;
+  color:#bdaacb;
+}
+
+@media(max-width:700px){
+  .container{grid-template-columns:1fr}
+  .logo{font-size:29px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🎧 Hamsafar Music</div>
+  <p>Your Music • Your Feelings • Your World ❤️</p>
+</header>
+
+<div class="container">
+
+  <section class="player-box">
+    <iframe
+      id="videoPlayer"
+      class="video"
+      src="https://www.youtube.com/embed/L6V1r-hEd2E?rel=0"
+      title="Hamsafar Music Player"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen>
+    </iframe>
+
+    <div class="now" id="nowPlaying">
+      Now Playing: Song 1
+    </div>
+
+    <p style="color:#bdaacb">
+      Hamsafar Music Player 🎵
+    </p>
+
+    <div class="controls">
+      <button onclick="previousSong()">⏮ Previous</button>
+      <button onclick="nextSong()">Next ⏭</button>
+    </div>
+  </section>
+
+  <section class="playlist">
+    <h2>🎶 My Playlist</h2>
+    <div id="songList"></div>
+  </section>
+
+</div>
+
+<footer>
+  Made with ❤️ | Hamsafar Music
+</footer>
+
+<script>
+
+const songs = [
+  {id:"L6V1r-hEd2E",name:"Song 1"},
+  {id:"GX9x62kFsVU",name:"Song 2"},
+  {id:"VWCBZpvjZfc",name:"Song 3"},
+  {id:"ebZj_nrmH-c",name:"Song 4"},
+  {id:"oafxkMv4xnc",name:"Song 5"},
+  {id:"BWL2OhICvn8",name:"Song 6"},
+  {id:"IAONd2d_PDU",name:"Song 7"},
+  {id:"F2m4HPLvj-4",name:"Song 8"},
+  {id:"1xuhxVo8v60",name:"Song 9"},
+  {id:"3_dtybS0rsI",name:"Song 10"}
+];
+
+let currentSong = 0;
+
+const player = document.getElementById("videoPlayer");
+const songList = document.getElementById("songList");
+const nowPlaying = document.getElementById("nowPlaying");
+
+function loadSong(index){
+  currentSong = (index + songs.length) % songs.length;
+
+  const song = songs[currentSong];
+
+  player.src =
+    "https://www.youtube.com/embed/" +
+    song.id + "?autoplay=1&rel=0";
+
+  nowPlaying.innerText =
+    "Now Playing: " + song.name;
+
+  renderPlaylist();
+}
+
+function renderPlaylist(){
+  songList.innerHTML = "";
+
+  songs.forEach((song,index)=>{
+    const item = document.createElement("div");
+
+    item.className =
+      "song " + (index === currentSong ? "active" : "");
+
+    item.innerHTML = `
+      <div class="number">${index+1}</div>
+      <div>
+        <div class="song-title">${song.name}</div>
+        <small>${index===currentSong ? "▶ Now Playing" : "Click to Play"}</small>
+      </div>
+    `;
+
+    item.onclick = ()=>loadSong(index);
+
+    songList.appendChild(item);
+  });
+}
+
+function nextSong(){
+  loadSong(currentSong+1);
+}
+
+function previousSong(){
+  loadSong(currentSong-1);
+}
+
+renderPlaylist();
+
+</script>
+
+</body>
+    </html>
+    
